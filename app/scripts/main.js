@@ -20,7 +20,7 @@ var yValue;
 var yMap;
 // setup fill color
 var cValue = function(d) {
-        return d.Manufacturer;
+        return d['Manufacturer'];
     },
     color = d3.scale.category10();
 // add the graph canvas to the body of the webpage
@@ -89,13 +89,15 @@ d3.csv("data/cereal.csv", function(error, rows) {
         .data(data)
         .enter().append("circle");
     dotsObj.attr("class", "dot")
-        .attr("r", 3.5)
+        .attr("r", 4.5)
         .style("fill", function(d) {
+          console.log('d',cValue(d));
             return color(cValue(d));
         })
         .style("opacity", function(d) {
-            return 0.8;
+            return 0.4;
         })
+
     render();
     //addLegend();
 });
@@ -113,8 +115,11 @@ function render() {
     yMap = function(d) {
         return yScale(yValue(d))
     };
-    xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue) + 1]);
-    yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue) + 1]);
+    var xRange = d3.max(data, xValue) - d3.min(data, xValue);
+    var yRange = d3.max(data, yValue) - d3.min(data, yValue);
+
+    xScale.domain([d3.min(data, xValue) - xRange/10, d3.max(data, xValue) + xRange/10]);
+    yScale.domain([d3.min(data, yValue) - yRange/10, d3.max(data, yValue) + yRange/10]);
     // x-axis
     xAxisObj
         .call(xAxis)
@@ -136,11 +141,10 @@ function render() {
         //   .text("Protein");
     // draw dots
     dotsObj
+        .transition()
+        .duration( Math.floor(Math.random() * 20) + 80)
         .attr("cx", xMap)
         .attr("cy", yMap)
-        // .style("fill", function(d) {
-        //   return color(cValue(d));
-        // })
 }
 
 function addLegend() {
