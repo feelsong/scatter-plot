@@ -37,6 +37,8 @@ var headers = [];
 var axisListHTML = '';
 var xAxisSelector = document.querySelector('#x-axis-selector');
 var yAxisSelector = document.querySelector('#y-axis-selector');
+var xAxisLabelSelector;
+var yAxisLabelSelector;
 var xIndex = 0;
 var yIndex = 1;
 var xAxisObj;
@@ -81,13 +83,36 @@ d3.csv("data/cereal.csv", function(error, rows) {
     xAxisObj = svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")");
+
+    //add x label
+    xAxisObj.append("text")
+      .attr("class", "x-axis-label label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end");
+
+    xAxisLabelSelector = d3.select('.x-axis-label')
+
+
     //set up y axis object
     yAxisObj = svg.append("g")
         .attr("class", "y axis")
+
+    //add y label
+    yAxisObj.append("text")
+      .attr("class", "y-axis-label label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end");
+
+    yAxisLabelSelector = d3.select('.y-axis-label')
+
     //set up dots object
     dotsObj = svg.selectAll(".dot")
         .data(data)
         .enter().append("circle");
+
     dotsObj.attr("class", "dot")
         .attr("r", 4.5)
         .style("fill", function(d) {
@@ -99,10 +124,13 @@ d3.csv("data/cereal.csv", function(error, rows) {
         })
 
     render();
+
+    //add legend later
     //addLegend();
 });
 
 function render() {
+
     xValue = function(d) {
         return d[headers[xIndex]]
     };
@@ -115,30 +143,25 @@ function render() {
     yMap = function(d) {
         return yScale(yValue(d))
     };
+
     var xRange = d3.max(data, xValue) - d3.min(data, xValue);
     var yRange = d3.max(data, yValue) - d3.min(data, yValue);
 
     xScale.domain([d3.min(data, xValue) - xRange/10, d3.max(data, xValue) + xRange/10]);
     yScale.domain([d3.min(data, yValue) - yRange/10, d3.max(data, yValue) + yRange/10]);
+
     // x-axis
     xAxisObj
         .call(xAxis)
-        // .append("text")
-        //   .attr("class", "label")
-        //   .attr("x", width)
-        //   .attr("y", -6)
-        //   .style("text-anchor", "end")
-        //   .text("Calories");
+
+    xAxisLabelSelector.text(headers[xIndex]);
+
     // y-axis
     yAxisObj
         .call(yAxis)
-        // .append("text")
-        //   .attr("class", "label")
-        //   .attr("transform", "rotate(-90)")
-        //   .attr("y", 6)
-        //   .attr("dy", ".71em")
-        //   .style("text-anchor", "end")
-        //   .text("Protein");
+
+    xAxisLabelSelector.text(headers[yIndex]);
+
     // draw dots
     dotsObj
         .transition()
