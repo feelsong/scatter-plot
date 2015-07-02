@@ -1,0 +1,32 @@
+body {
+  font: 11px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #fff;
+}
+
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none;
+}
+
+.selector-box {
+  float:left;
+}
+#x-axis-selector, #y-axis-selector {
+  display:none;
+  float:left;
+}
+label {
+  float:left;
+}
