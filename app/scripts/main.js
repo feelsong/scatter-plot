@@ -69,8 +69,9 @@ d3.csv("data/cereal.csv", function(error, rows) {
     yAxisSelector.innerHTML = axisListHTML;
     xAxisSelector.value = headers[xIndex];
     yAxisSelector.value = headers[yIndex];
-    xAxisSelector.style.display = 'block';
-    yAxisSelector.style.display = 'block';
+
+    document.querySelector('.selector-box').style.display = 'block';
+
     xAxisSelector.onchange = function() {
         xIndex = this.options.selectedIndex;
         render();
@@ -116,7 +117,6 @@ d3.csv("data/cereal.csv", function(error, rows) {
     dotsObj.attr("class", "dot")
         .attr("r", 4.5)
         .style("fill", function(d) {
-          console.log('d',cValue(d));
             return color(cValue(d));
         })
         .style("opacity", function(d) {
