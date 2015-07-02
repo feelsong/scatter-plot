@@ -139,6 +139,10 @@ d3.csv("data/cereal.csv", function(error, data) {
                .style("opacity", 0);
       });
 
+      //addLegend();
+});
+
+function addLegend() {
   // draw legend
   var legend = svg.selectAll(".legend")
       .data(color.domain())
@@ -160,4 +164,4 @@ d3.csv("data/cereal.csv", function(error, data) {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) { return d;})
-});
+}
