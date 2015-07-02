@@ -160,7 +160,7 @@ function render() {
     yAxisObj
         .call(yAxis)
 
-    xAxisLabelSelector.text(headers[yIndex]);
+    yAxisLabelSelector.text(headers[yIndex]);
 
     // draw dots
     dotsObj
