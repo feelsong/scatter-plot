@@ -44,6 +44,29 @@ gulp.task('html', ['styles'], function () {
     .pipe(gulp.dest('dist'));
 });
 
+gulp.task('data',function() {
+    return gulp.src('app/data/**/*')
+      .pipe(gulp.dest('dist/data/'));
+})
+gulp.task('js',function() {
+    return gulp.src('app/scripts/**/*')
+      .pipe($.if('*.js', $.uglify()))
+      .pipe(gulp.dest('dist/scripts/'));
+})
+gulp.task('scss',function() {
+    return gulp.src('app/styles/*.scss')
+      .pipe($.sass({
+        outputStyle: 'nested', // libsass doesn't support expanded yet
+        precision: 10,
+        includePaths: ['.'],
+        onError: console.error.bind(console, 'Sass error:')
+      }))
+      .pipe($.postcss([
+        require('autoprefixer-core')({browsers: ['last 1 version']})
+      ]))
+      .pipe(gulp.dest('dist/styles/'));
+})
+
 gulp.task('images', function () {
   return gulp.src('app/images/**/*')
     .pipe($.cache($.imagemin({
@@ -92,6 +115,7 @@ gulp.task('serve', ['styles', 'fonts'], function () {
     'app/*.html',
     'app/scripts/**/*.js',
     'app/images/**/*',
+    'app/data/**/*',
     '.tmp/fonts/**/*'
   ]).on('change', reload);
 
@@ -117,7 +141,7 @@ gulp.task('wiredep', function () {
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('build', ['jshint', 'html', 'images', 'fonts', 'extras'], function () {
+gulp.task('build', ['html','data','js','scss', 'images', 'fonts', 'extras'], function () {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
