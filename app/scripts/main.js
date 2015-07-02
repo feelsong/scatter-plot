@@ -2,13 +2,6 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-/*
- * value accessor - returns the value to encode for a given data object.
- * scale - maps value to a visual display encoding, such as a pixel position.
- * map function - maps from data value to display value
- * axis - sets up axis
- */
-
 // setup x
 var xValue = function(d) { return d.Calories;}, // data -> value
     xScale = d3.scale.linear().range([0, width]), // value -> display
@@ -76,11 +69,15 @@ d3.csv("data/cereal.csv", function(error, data) {
   yAxisSelector.style.display = 'block';
 
   xAxisSelector.onchange = function() {
-    console.log(this.options.selectedIndex);
+    xIndex = this.options.selectIndex;
   }
 
+  yAxisSelector.onchange = function() {
+    yIndex = this.options.selectIndex;
+  }
 
-  // don't want dots overlapping axis, so add in buffer to data domain
+  //render();
+
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
@@ -117,11 +114,9 @@ d3.csv("data/cereal.csv", function(error, data) {
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) {
-        //console.log(color(cValue(d)));
         return color(cValue(d));
       })
       .style("opacity", function(d) {
-        //console.log(color(cValue(d)));
         return 0.5;
       })
       .on("mouseover", function(d) {
