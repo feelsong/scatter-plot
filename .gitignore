@@ -3,5 +3,9 @@ dist
 .tmp
 .sass-cache
 .DS_Store
+.editorconfig
+.yo-rc.json
+.bowererrc
+.jshintrc
 bower_components
 test/bower_components
