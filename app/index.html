@@ -5,14 +5,21 @@
 <link rel="stylesheet" href="styles/main.css">
 <body>
 <h1>Interactive Scatter Plot</h1>
+<div class="selector-box">
+  <span>
+    <label>X</label>
+    <select id="x-axis-selector">
+    </select>
+  </span>
+  <span>
+    <label>Y</label>
+    <select id="y-axis-selector">
+  </select>
+  </span>
+</div>
 <div class="plot-box">
 </div>
-<div class="selector-box">
-  <label>X</label><select id="x-axis-selector">
-  </select>
-  <label>Y</label><select id="y-axis-selector">
-  </select>
-</div>
+
 </body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="scripts/main.js"></script>

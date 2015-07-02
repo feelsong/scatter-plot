@@ -1,5 +1,7 @@
 body {
   font: 11px sans-serif;
+  margin-left: 50px;
+  margin-top: 30px;
 }
 
 .axis path,
@@ -21,12 +23,18 @@ body {
 }
 
 .selector-box {
-  float:left;
-}
-#x-axis-selector, #y-axis-selector {
   display:none;
-  float:left;
-}
-label {
-  float:left;
+  width: 174px;
+  position: absolute;
+  left: 800px;
+  top:15px;
+  padding: 10px;
+  span {
+    display:inline-block;
+    margin:1px;
+    label {
+      font-size: 14px;
+      padding: 1px;
+    }
+  }
 }
