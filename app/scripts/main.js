@@ -1,18 +1,24 @@
+//set up width, height, margin
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-// setup x
-var xValue = function(d) { return d.Calories;}, // data -> value
-    xScale = d3.scale.linear().range([0, width]), // value -> display
-    xMap = function(d) { return xScale(xValue(d));}, // data -> display
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+// set up scale and axis
+var xScale = d3.scale.linear().range([0, width]);
+var yScale = d3.scale.linear().range([height, 0]);
+var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+var yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-// setup y
-var yValue = function(d) { return d["Protein"];}, // data -> value
-    yScale = d3.scale.linear().range([height, 0]), // value -> display
-    yMap = function(d) { return yScale(yValue(d));}, // data -> display
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+//set up x
+var xValue;
+var xMap;
+
+//set up y
+var yValue;
+var yMap;
+
+
 
 // setup fill color
 var cValue = function(d) { return d.Manufacturer;},
@@ -34,20 +40,27 @@ var headers = [];
 var axisListHTML = '';
 var xAxisSelector=  document.querySelector('#x-axis-selector');
 var yAxisSelector=  document.querySelector('#y-axis-selector');
+
 var xIndex = 0;
 var yIndex = 1;
 
-// load data
-d3.csv("data/cereal.csv", function(error, data) {
+var xAxisObj;
+var yAxisObj;
+var dotsObj;
 
+// load data
+d3.csv("data/cereal.csv", function(error, rows) {
   // change string (from CSV) into number format
-  data.forEach(function(d) {
+   rows.forEach(function(d) {
     Object.keys(d).forEach(function(key) {
       if (!isNaN(d[key])) {
         d[key] = +d[key];
       }
     })
   });
+
+  data = rows
+
 
   //add numeric headers only
   Object.keys(data[0]).forEach(function(key) {
@@ -69,73 +82,81 @@ d3.csv("data/cereal.csv", function(error, data) {
   yAxisSelector.style.display = 'block';
 
   xAxisSelector.onchange = function() {
-    xIndex = this.options.selectIndex;
+    xIndex = this.options.selectedIndex;
+    render();
   }
 
   yAxisSelector.onchange = function() {
-    yIndex = this.options.selectIndex;
+    yIndex = this.options.selectedIndex;
+    render();
   }
 
-  //render();
+  // set up x axis object
+  xAxisObj = svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")");
+
+  //set up y axis object
+  yAxisObj = svg.append("g")
+      .attr("class", "y axis")
+
+  //set up dots object
+  dotsObj = svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle");
+
+    dotsObj.attr("class", "dot")
+        .attr("r", 3.5)
+        .style("fill", function(d) {
+          return color(cValue(d));
+        })
+        .style("opacity", function(d) {
+          return 0.8;
+        })
+
+      render();
+      //addLegend();
+});
+
+function render() {
+  xValue = function(d) {  return d[headers[xIndex]]};
+  xMap = function(d) {  return xScale(xValue(d)) };
+  yValue = function(d) { return d[headers[yIndex]]};
+  yMap = function(d) { return yScale(yValue(d))};
 
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
   // x-axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
+  xAxisObj
       .call(xAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
-      .style("text-anchor", "end")
-      .text("Calories");
+    // .append("text")
+    //   .attr("class", "label")
+    //   .attr("x", width)
+    //   .attr("y", -6)
+    //   .style("text-anchor", "end")
+    //   .text("Calories");
 
   // y-axis
-  svg.append("g")
-      .attr("class", "y axis")
+  yAxisObj
       .call(yAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Protein");
+    // .append("text")
+    //   .attr("class", "label")
+    //   .attr("transform", "rotate(-90)")
+    //   .attr("y", 6)
+    //   .attr("dy", ".71em")
+    //   .style("text-anchor", "end")
+    //   .text("Protein");
 
   // draw dots
-  svg.selectAll(".dot")
-      .data(data)
-    .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 3.5)
+  dotsObj
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", function(d) {
-        return color(cValue(d));
-      })
-      .style("opacity", function(d) {
-        return 0.5;
-      })
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          tooltip.html(d["Cereal Name"] + "<br/> (" + xValue(d)
-	        + ", " + yValue(d) + ")")
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-      });
+      // .style("fill", function(d) {
+      //   return color(cValue(d));
+      // })
+}
 
-      //addLegend();
-});
 
 function addLegend() {
   // draw legend
