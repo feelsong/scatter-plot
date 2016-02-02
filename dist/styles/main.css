@@ -1,0 +1,32 @@
+body {
+  font: 11px sans-serif;
+  margin-left: 50px;
+  margin-top: 30px; }
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges; }
+
+.dot {
+  stroke: #fff; }
+
+.tooltip {
+  position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none; }
+
+.selector-box {
+  display: none;
+  width: 174px;
+  position: absolute;
+  left: 800px;
+  top: 15px;
+  padding: 10px; }
+  .selector-box span {
+    display: inline-block;
+    margin: 1px; }
+    .selector-box span label {
+      font-size: 14px;
+      padding: 1px; }
